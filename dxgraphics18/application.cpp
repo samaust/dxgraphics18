@@ -64,9 +64,7 @@ Application::Application(void)
 
 	_running = true;
 
-	ADD_LOG("initWindow");
 	initWindow();
-	ADD_LOG("initDirect3D");
 	initDirect3D();
 }
 
@@ -171,15 +169,12 @@ void Application::initDirect3D(void)
 //	if(FAILED(_object->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, _handle, _vertexProcessing, &_presentParameters, &_device)))
 //	{
 
-	ADD_LOG("CreateDevice: calling");
 	if(FAILED(_object->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, _handle, _vertexProcessing, &_presentParameters, &_device)))
 	{
 		MessageBox(_handle, L"CreateDevice() failed!", L"initDirect3D()", MB_OK);
 		_running = false;
 	}
 //	}
-	ADD_LOG("CreateDevice: called");
-
 
 	initScene();
 	checkDeviceCaps();
@@ -190,7 +185,6 @@ void Application::initDirect3D(void)
  */
 void Application::initScene(void)
 {
-	ADD_LOG("initScene: entering");
 	D3DXMatrixPerspectiveFovLH(&_projection, _fieldOfView, _aspectRatio, _nearPlane, _farPlane);
 	//D3DXMatrixOrthoLH(&_projection, 0.2f*4.0f, 0.2f*3.0f, _nearPlane, _farPlane); // pour tester projection orthographique
 	_device->SetTransform(D3DTS_PROJECTION, &_projection);
@@ -214,10 +208,7 @@ void Application::initScene(void)
 	
 		// Obtain the technique handles
 		g_hTRenderScene = g_pEffect->GetTechniqueByName( "RenderScene" );
-	
 	}
-
-	ADD_LOG("initScene: exiting");
 }
 
 /*!
@@ -232,31 +223,23 @@ void Application::checkDeviceCaps(void)
  */
 bool Application::checkDevice(void)
 {
-	ADD_LOG("checkDevice");
 	switch(_device->TestCooperativeLevel())
 	{
 		case D3DERR_DEVICELOST: 
-			ADD_LOG("checkDevice : D3DERR_DEVICELOST 1");
 			if (g_pEffect)
 			{
-				ADD_LOG("checkDevice : D3DERR_DEVICELOST 2");
 				g_pEffect->OnLostDevice();
-				ADD_LOG("checkDevice : D3DERR_DEVICELOST 3");
 			}
 			return false;
 
 		case D3DERR_DEVICENOTRESET:
 		{
-			ADD_LOG("checkDevice : D3DERR_DEVICENOTRESET 1");
 			if(FAILED(_device->Reset(&_presentParameters)))
 			{
-				ADD_LOG("checkDevice : D3DERR_DEVICENOTRESET 2");
 				//MessageBox(_handle, L"Reset() failed!", L"checkDevice()", MB_OK);
 				return false;
 			}
-			ADD_LOG("checkDevice : D3DERR_DEVICENOTRESET 3");
 			initScene();
-			ADD_LOG("checkDevice : D3DERR_DEVICENOTRESET 4");
 			return true;
 		}
 		default: return true;
@@ -276,7 +259,6 @@ void Application::killWindow(void)
  */
 void Application::killDirect3D(void)
 {
-	ADD_LOG("killDirect3D called");
 	if(_device != NULL)
 	{
 		_device->Release();
